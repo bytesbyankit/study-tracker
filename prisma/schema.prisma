@@ -1,0 +1,54 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model StudyLog {
+  id               String   @id @default(cuid())
+  date             String   // Format: YYYY-MM-DD
+  subject          String
+  topic            String
+  timeSpentMinutes Int      @default(30)
+  confidence       String   @default("GREAT") // GREAT (😊), CONFUSED (🤔), HARD (🤯)
+  notes            String?
+  mamaStars        Int      @default(0)       // 0 to 5
+  mamaFeedback     String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+model PlanItem {
+  id          String   @id @default(cuid())
+  targetDate  String   // Format: YYYY-MM-DD
+  subject     String
+  topic       String
+  priority    String   @default("MEDIUM") // HIGH, MEDIUM, LOW
+  isCompleted Boolean  @default(false)
+  notes       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Doubt {
+  id              String    @id @default(cuid())
+  subject         String
+  topic           String?
+  question        String
+  bookReference   String?
+  status          String    @default("PENDING") // PENDING, SOLVED
+  resolutionNotes String?
+  solvedAt        DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+model Subject {
+  id    String @id @default(cuid())
+  name  String @unique
+  icon  String @default("📚")
+  color String @default("blue")
+}

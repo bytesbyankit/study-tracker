@@ -1,36 +1,73 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🌟 Meri Padhai Tracker (Study & Doubt Tracker)
 
-## Getting Started
+A cheerful, kid-friendly study tracking web application built with **Next.js**, **Tailwind CSS**, and **SQLite (Prisma)**, packaged into **Docker** with a persistent volume for seamless multi-device access.
 
-First, run the development server:
+---
+
+## 🎯 Key Features
+
+1. **👧 Bhanji Mode & 👨‍🏫 Mama / Mentor Mode**
+   - Seamless role switcher in the header.
+   - Bhanji can log studies, ask doubts, and track upcoming goals.
+   - Mama can review study sessions, give stars (1-5 ⭐) with encouraging feedback notes, and write solutions to doubts.
+
+2. **📝 Aaj Kya Padha (Daily Log)**
+   - Subject selection with cute icons (Maths 📐, Science 🔬, English 📖, Hindi ✍️, Computer 💻, etc.).
+   - Topic/chapter name, time spent (quick 15m/30m/45m/60m pills), and confidence rating (😊 Samajh gaya / 🤔 Doubt hai / 🤯 Mushkil tha).
+   - Confetti celebration upon saving entries! 🎉
+
+3. **🎯 Aage Kya Padhna Hai (Planner / To-Do)**
+   - Target dates (Today, Tomorrow, or custom).
+   - Priority levels (Urgent 🔴 vs Normal 🟡).
+   - Checkbox to mark complete + one-click option to log into today's study.
+
+4. **❓ Doubt Box (Mere Sawaal)**
+   - Bhanji asks doubts with subject, chapter, and book/page reference.
+   - Live badge showing pending doubts.
+   - Mama writes step-by-step explanations and marks them solved.
+
+5. **🏆 Trophies & Badges (Padhai Hall of Fame)**
+   - Real-time study streak counter (🔥 X Days Streak).
+   - Total stars earned.
+   - Unlockable achievement badges (First Step, Curious Mind, Streak Champion, Goal Crusher).
+   - Subject-wise study time breakdown bars.
+
+---
+
+## 🚀 One-Command Docker Start
+
+To start the full-stack app with persistent database:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+cd /home/neosoft/projects/study-tracker
+docker compose up -d
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+To stop:
+```bash
+docker compose down
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+To view logs:
+```bash
+docker compose logs -f
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## 📱 Multi-Device Access (Same Wi-Fi / Local Network)
 
-To learn more about Next.js, take a look at the following resources:
+Both you and your niece can access the app simultaneously from different devices:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- **From this computer:** `http://localhost:3000`
+- **From phones / tablets / other laptops on the same Wi-Fi:**
+  ```text
+  http://192.168.0.109:3000
+  ```
+  *(Replace with your current local IP if it changes: run `hostname -I`)*
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## 💾 Data Persistence
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+All data is stored inside the SQLite database at `./prisma/dev.db`, which is mounted as a Docker volume (`./prisma:/app/prisma`). Your data remains completely safe across container restarts, stops, and updates.
