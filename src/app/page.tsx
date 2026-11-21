@@ -9,7 +9,7 @@ import DoubtBoxTab from "@/components/DoubtBoxTab";
 import TrophyTab from "@/components/TrophyTab";
 import AddSubjectModal from "@/components/AddSubjectModal";
 import { StudyLog, PlanItem, Doubt, SubjectItem, StatsData } from "@/lib/types";
-import { BookOpen, Calendar, HelpCircle, Award, Loader2, Sparkles } from "lucide-react";
+import { BookOpen, Calendar, HelpCircle, Award, Loader2 } from "lucide-react";
 
 export default function Home() {
   const [role, setRole] = useState<"bhanji" | "mama">("bhanji");
@@ -32,6 +32,18 @@ export default function Home() {
 
   const [isLoading, setIsLoading] = useState(true);
   const [isSubjectModalOpen, setIsSubjectModalOpen] = useState(false);
+  const [greeting, setGreeting] = useState("Namaste! 🌟");
+
+  useEffect(() => {
+    const hour = new Date().getHours();
+    if (hour < 12) {
+      setGreeting("Good Morning! ☀️");
+    } else if (hour < 17) {
+      setGreeting("Good Afternoon! 🌤️");
+    } else {
+      setGreeting("Good Evening! 🌙");
+    }
+  }, []);
 
   // Load all data
   const loadData = useCallback(async () => {
@@ -123,7 +135,6 @@ export default function Home() {
 
   const handleQuickLogToDaily = (plan: PlanItem) => {
     setActiveTab("daily");
-    // Pre-populate daily form or simply trigger
     handleAddLog({
       date: new Date().toISOString().split("T")[0],
       subject: plan.subject,
@@ -177,20 +188,6 @@ export default function Home() {
     if (res.ok) await loadData();
   };
 
-  // Greeting based on time
-  const [greeting, setGreeting] = useState("Namaste! 🌟");
-
-  useEffect(() => {
-    const hour = new Date().getHours();
-    if (hour < 12) {
-      setGreeting("Good Morning! ☀️");
-    } else if (hour < 17) {
-      setGreeting("Good Afternoon! 🌤️");
-    } else {
-      setGreeting("Good Evening! 🌙");
-    }
-  }, []);
-
   return (
     <div className="min-h-screen flex flex-col">
       {/* Header with Role switcher and Streaks */}
@@ -203,7 +200,7 @@ export default function Home() {
 
       {/* Main Container */}
       <main className="flex-1 max-w-6xl w-full mx-auto px-4 py-5 sm:px-6">
-        {/* Welcome Banner */}
+        {/* Welcome Section */}
         <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
           <div>
             <h2 className="text-xl sm:text-2xl font-bold text-slate-800 flex items-center gap-2">
@@ -220,138 +217,191 @@ export default function Home() {
           </div>
 
           {role === "mama" && stats.pendingDoubts > 0 && (
-            <div className="bg-rose-100 text-rose-800 text-xs font-semibold px-3 py-1.5 rounded-full flex items-center gap-1.5 animate-pulse">
-              <HelpCircle className="w-4 h-4 text-rose-600" />
+            <aside
+              role="alert"
+              className="bg-rose-100 text-rose-900 text-xs font-semibold px-3 py-1.5 rounded-full flex items-center gap-1.5 animate-pulse"
+            >
+              <HelpCircle className="w-4 h-4 text-rose-600" aria-hidden="true" />
               <span>{stats.pendingDoubts} Doubts waiting for your answer!</span>
-            </div>
+            </aside>
           )}
         </div>
 
         {/* Quick Stats Bar */}
         <StatsBar stats={stats} />
 
-        {/* Tab Navigation */}
-        <div className="flex border-b border-purple-200/70 mb-6 overflow-x-auto no-scrollbar gap-2 sm:gap-4">
-          <button
-            onClick={() => setActiveTab("daily")}
-            className={`pb-3 px-3 text-xs sm:text-sm font-bold flex items-center gap-2 border-b-2 transition-all whitespace-nowrap ${
-              activeTab === "daily"
-                ? "border-purple-600 text-purple-700"
-                : "border-transparent text-slate-500 hover:text-slate-800"
-            }`}
+        {/* Accessible Tab Navigation */}
+        <nav aria-label="Study tracker sections" className="mb-6">
+          <div
+            role="tablist"
+            aria-label="Tracker Tabs"
+            className="flex border-b border-purple-200/70 overflow-x-auto no-scrollbar gap-2 sm:gap-4"
           >
-            <BookOpen className="w-4 h-4" />
-            <span>Aaj Kya Padha (Daily Log)</span>
-            {logs.length > 0 && (
-              <span className="text-[10px] bg-purple-100 text-purple-700 px-1.5 py-0.5 rounded-full">
-                {logs.length}
-              </span>
-            )}
-          </button>
+            <button
+              role="tab"
+              id="tab-daily"
+              aria-controls="panel-daily"
+              aria-selected={activeTab === "daily"}
+              onClick={() => setActiveTab("daily")}
+              className={`pb-3 px-3 min-h-[44px] text-xs sm:text-sm font-bold flex items-center gap-2 border-b-2 transition-all whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 ${
+                activeTab === "daily"
+                  ? "border-purple-600 text-purple-700 font-bold"
+                  : "border-transparent text-slate-600 hover:text-slate-900"
+              }`}
+            >
+              <BookOpen className="w-4 h-4" />
+              <span>Aaj Kya Padha (Daily Log)</span>
+              {logs.length > 0 && (
+                <span className="text-[10px] bg-purple-100 text-purple-700 px-1.5 py-0.5 rounded-full">
+                  {logs.length}
+                </span>
+              )}
+            </button>
 
-          <button
-            onClick={() => setActiveTab("planner")}
-            className={`pb-3 px-3 text-xs sm:text-sm font-bold flex items-center gap-2 border-b-2 transition-all whitespace-nowrap ${
-              activeTab === "planner"
-                ? "border-blue-600 text-blue-700"
-                : "border-transparent text-slate-500 hover:text-slate-800"
-            }`}
-          >
-            <Calendar className="w-4 h-4" />
-            <span>Aage Kya Padhna Hai (Planner)</span>
-            {stats.upcomingPlans > 0 && (
-              <span className="text-[10px] bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded-full">
-                {stats.upcomingPlans}
-              </span>
-            )}
-          </button>
+            <button
+              role="tab"
+              id="tab-planner"
+              aria-controls="panel-planner"
+              aria-selected={activeTab === "planner"}
+              onClick={() => setActiveTab("planner")}
+              className={`pb-3 px-3 min-h-[44px] text-xs sm:text-sm font-bold flex items-center gap-2 border-b-2 transition-all whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${
+                activeTab === "planner"
+                  ? "border-blue-600 text-blue-700 font-bold"
+                  : "border-transparent text-slate-600 hover:text-slate-900"
+              }`}
+            >
+              <Calendar className="w-4 h-4" />
+              <span>Aage Kya Padhna Hai (Planner)</span>
+              {stats.upcomingPlans > 0 && (
+                <span className="text-[10px] bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded-full">
+                  {stats.upcomingPlans}
+                </span>
+              )}
+            </button>
 
-          <button
-            onClick={() => setActiveTab("doubts")}
-            className={`pb-3 px-3 text-xs sm:text-sm font-bold flex items-center gap-2 border-b-2 transition-all whitespace-nowrap ${
-              activeTab === "doubts"
-                ? "border-rose-600 text-rose-700"
-                : "border-transparent text-slate-500 hover:text-slate-800"
-            }`}
-          >
-            <HelpCircle className="w-4 h-4" />
-            <span>Doubts Box (Sawaal)</span>
-            {stats.pendingDoubts > 0 && (
-              <span className="text-[10px] bg-rose-500 text-white font-bold px-1.5 py-0.5 rounded-full">
-                {stats.pendingDoubts}
-              </span>
-            )}
-          </button>
+            <button
+              role="tab"
+              id="tab-doubts"
+              aria-controls="panel-doubts"
+              aria-selected={activeTab === "doubts"}
+              onClick={() => setActiveTab("doubts")}
+              className={`pb-3 px-3 min-h-[44px] text-xs sm:text-sm font-bold flex items-center gap-2 border-b-2 transition-all whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-500 ${
+                activeTab === "doubts"
+                  ? "border-rose-600 text-rose-700 font-bold"
+                  : "border-transparent text-slate-600 hover:text-slate-900"
+              }`}
+            >
+              <HelpCircle className="w-4 h-4" />
+              <span>Doubts Box (Sawaal)</span>
+              {stats.pendingDoubts > 0 && (
+                <span className="text-[10px] bg-rose-600 text-white font-bold px-1.5 py-0.5 rounded-full">
+                  {stats.pendingDoubts}
+                </span>
+              )}
+            </button>
 
-          <button
-            onClick={() => setActiveTab("trophies")}
-            className={`pb-3 px-3 text-xs sm:text-sm font-bold flex items-center gap-2 border-b-2 transition-all whitespace-nowrap ${
-              activeTab === "trophies"
-                ? "border-amber-500 text-amber-600"
-                : "border-transparent text-slate-500 hover:text-slate-800"
-            }`}
-          >
-            <Award className="w-4 h-4" />
-            <span>Trophies & Badges 🏆</span>
-          </button>
-        </div>
+            <button
+              role="tab"
+              id="tab-trophies"
+              aria-controls="panel-trophies"
+              aria-selected={activeTab === "trophies"}
+              onClick={() => setActiveTab("trophies")}
+              className={`pb-3 px-3 min-h-[44px] text-xs sm:text-sm font-bold flex items-center gap-2 border-b-2 transition-all whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 ${
+                activeTab === "trophies"
+                  ? "border-amber-500 text-amber-600 font-bold"
+                  : "border-transparent text-slate-600 hover:text-slate-900"
+              }`}
+            >
+              <Award className="w-4 h-4" />
+              <span>Trophies & Badges 🏆</span>
+            </button>
+          </div>
+        </nav>
 
         {/* Content Loading State */}
         {isLoading ? (
-          <div className="flex flex-col items-center justify-center py-20 text-slate-400">
+          <div className="flex flex-col items-center justify-center py-20 text-slate-400" role="status">
             <Loader2 className="w-8 h-8 animate-spin text-purple-600 mb-2" />
             <p className="text-xs">Loading tracker...</p>
           </div>
         ) : (
-          <>
-            {activeTab === "daily" && (
-              <DailyLogTab
-                logs={logs}
-                subjects={subjects}
-                role={role}
-                onAddLog={handleAddLog}
-                onUpdateLog={handleUpdateLog}
-                onDeleteLog={handleDeleteLog}
-                onOpenAddSubject={() => setIsSubjectModalOpen(true)}
-              />
-            )}
+          <div>
+            <div
+              id="panel-daily"
+              role="tabpanel"
+              aria-labelledby="tab-daily"
+              hidden={activeTab !== "daily"}
+            >
+              {activeTab === "daily" && (
+                <DailyLogTab
+                  logs={logs}
+                  subjects={subjects}
+                  role={role}
+                  onAddLog={handleAddLog}
+                  onUpdateLog={handleUpdateLog}
+                  onDeleteLog={handleDeleteLog}
+                  onOpenAddSubject={() => setIsSubjectModalOpen(true)}
+                />
+              )}
+            </div>
 
-            {activeTab === "planner" && (
-              <PlannerTab
-                plans={plans}
-                subjects={subjects}
-                onAddPlan={handleAddPlan}
-                onTogglePlan={handleTogglePlan}
-                onDeletePlan={handleDeletePlan}
-                onQuickLogToDaily={handleQuickLogToDaily}
-              />
-            )}
+            <div
+              id="panel-planner"
+              role="tabpanel"
+              aria-labelledby="tab-planner"
+              hidden={activeTab !== "planner"}
+            >
+              {activeTab === "planner" && (
+                <PlannerTab
+                  plans={plans}
+                  subjects={subjects}
+                  onAddPlan={handleAddPlan}
+                  onTogglePlan={handleTogglePlan}
+                  onDeletePlan={handleDeletePlan}
+                  onQuickLogToDaily={handleQuickLogToDaily}
+                />
+              )}
+            </div>
 
-            {activeTab === "doubts" && (
-              <DoubtBoxTab
-                doubts={doubts}
-                subjects={subjects}
-                role={role}
-                onAddDoubt={handleAddDoubt}
-                onResolveDoubt={handleResolveDoubt}
-                onDeleteDoubt={handleDeleteDoubt}
-              />
-            )}
+            <div
+              id="panel-doubts"
+              role="tabpanel"
+              aria-labelledby="tab-doubts"
+              hidden={activeTab !== "doubts"}
+            >
+              {activeTab === "doubts" && (
+                <DoubtBoxTab
+                  doubts={doubts}
+                  subjects={subjects}
+                  role={role}
+                  onAddDoubt={handleAddDoubt}
+                  onResolveDoubt={handleResolveDoubt}
+                  onDeleteDoubt={handleDeleteDoubt}
+                />
+              )}
+            </div>
 
-            {activeTab === "trophies" && (
-              <TrophyTab
-                logs={logs}
-                doubts={doubts}
-                plans={plans}
-                subjects={subjects}
-                stats={stats}
-              />
-            )}
-          </>
+            <div
+              id="panel-trophies"
+              role="tabpanel"
+              aria-labelledby="tab-trophies"
+              hidden={activeTab !== "trophies"}
+            >
+              {activeTab === "trophies" && (
+                <TrophyTab
+                  logs={logs}
+                  doubts={doubts}
+                  plans={plans}
+                  subjects={subjects}
+                  stats={stats}
+                />
+              )}
+            </div>
+          </div>
         )}
       </main>
 
-      {/* Add Subject Modal */}
+      {/* Native Add Subject Modal Dialog */}
       <AddSubjectModal
         isOpen={isSubjectModalOpen}
         onClose={() => setIsSubjectModalOpen(false)}
@@ -359,7 +409,7 @@ export default function Home() {
       />
 
       {/* Footer */}
-      <footer className="py-4 border-t border-purple-100 bg-white/60 text-center text-xs text-slate-400">
+      <footer className="py-4 border-t border-purple-100 bg-white/60 text-center text-xs text-slate-500">
         Meri Padhai Tracker • Padhai karo, aage badho! 🌟
       </footer>
     </div>

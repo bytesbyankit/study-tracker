@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useId } from "react";
 import { Doubt, SubjectItem } from "@/lib/types";
-import { fireCelebration, fireStars } from "@/lib/confetti";
+import { fireStars } from "@/lib/confetti";
 import { HelpCircle, CheckCircle, Plus, BookOpen, Trash2, Check, MessageSquare } from "lucide-react";
 
 interface DoubtBoxTabProps {
@@ -27,6 +27,11 @@ export default function DoubtBoxTab({
   onResolveDoubt,
   onDeleteDoubt,
 }: DoubtBoxTabProps) {
+  const subjectId = useId();
+  const topicId = useId();
+  const questionId = useId();
+  const bookRefId = useId();
+
   const [selectedSubject, setSelectedSubject] = useState(subjects[0]?.name || "Mathematics");
   const [topic, setTopic] = useState("");
   const [question, setQuestion] = useState("");
@@ -79,10 +84,10 @@ export default function DoubtBoxTab({
   return (
     <div className="space-y-6">
       {/* Ask Doubt Card */}
-      <div className="bg-white rounded-3xl p-5 sm:p-6 shadow-sm border border-rose-100/80">
-        <div className="flex items-center justify-between mb-4">
+      <section className="bg-white rounded-3xl p-5 sm:p-6 shadow-sm border border-rose-100/90">
+        <header className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
-            <span className="text-2xl">❓</span>
+            <span className="text-2xl" aria-hidden="true">❓</span>
             <div>
               <h2 className="text-lg font-bold text-slate-800">
                 Mere Sawaal / Doubts Box
@@ -92,22 +97,24 @@ export default function DoubtBoxTab({
               </p>
             </div>
           </div>
-          <span className="text-xs px-2.5 py-1 bg-rose-50 text-rose-700 rounded-full font-medium">
+          <span className="text-xs px-3 py-1 bg-rose-50 text-rose-700 rounded-full font-semibold">
             Doubt Corner
           </span>
-        </div>
+        </header>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {/* Subject */}
             <div>
-              <label className="block text-xs font-semibold text-slate-600 mb-1.5">
-                📚 Subject
+              <label htmlFor={subjectId} className="block text-xs font-semibold text-slate-700 mb-1.5">
+                📚 Subject <span className="text-rose-500" aria-hidden="true">*</span>
               </label>
               <select
+                id={subjectId}
+                name="subject"
                 value={selectedSubject}
                 onChange={(e) => setSelectedSubject(e.target.value)}
-                className="w-full text-sm px-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-rose-400 bg-white"
+                className="w-full text-base sm:text-sm px-3.5 py-2.5 min-h-[44px] rounded-xl border border-slate-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-500 bg-white"
               >
                 {subjects.map((sub) => (
                   <option key={sub.id} value={sub.name}>
@@ -119,45 +126,51 @@ export default function DoubtBoxTab({
 
             {/* Chapter / Topic */}
             <div>
-              <label className="block text-xs font-semibold text-slate-600 mb-1.5">
+              <label htmlFor={topicId} className="block text-xs font-semibold text-slate-700 mb-1.5">
                 📖 Chapter / Topic (Optional)
               </label>
               <input
+                id={topicId}
+                name="topic"
                 type="text"
                 placeholder="e.g. Chapter 3: Geometry"
                 value={topic}
                 onChange={(e) => setTopic(e.target.value)}
-                className="w-full text-sm px-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-rose-400"
+                className="w-full text-base sm:text-sm px-3.5 py-2.5 min-h-[44px] rounded-xl border border-slate-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-500"
               />
             </div>
           </div>
 
           {/* Question / Doubt */}
           <div>
-            <label className="block text-xs font-semibold text-slate-600 mb-1.5">
-              ❓ Kya Samajh Nahi Aaya? (Sawaal Likhhein)
+            <label htmlFor={questionId} className="block text-xs font-semibold text-slate-700 mb-1.5">
+              ❓ Kya Samajh Nahi Aaya? (Sawaal Likhhein) <span className="text-rose-500" aria-hidden="true">*</span>
             </label>
             <textarea
+              id={questionId}
+              name="question"
               rows={3}
               placeholder="e.g. Question no. 4 mein x ki value kaise nikali? Formula kaise lagate hain?"
               value={question}
               onChange={(e) => setQuestion(e.target.value)}
-              className="w-full text-sm px-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-rose-400 resize-none"
+              className="w-full text-base sm:text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-500 resize-none"
               required
             />
           </div>
 
           {/* Book / Page Reference */}
           <div>
-            <label className="block text-xs font-semibold text-slate-600 mb-1.5">
+            <label htmlFor={bookRefId} className="block text-xs font-semibold text-slate-700 mb-1.5">
               📚 Book Name & Page No. (Optional)
             </label>
             <input
+              id={bookRefId}
+              name="bookReference"
               type="text"
               placeholder="e.g. NCERT Page 64, Question 7(b)"
               value={bookRef}
               onChange={(e) => setBookRef(e.target.value)}
-              className="w-full text-sm px-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-rose-400"
+              className="w-full text-base sm:text-sm px-3.5 py-2.5 min-h-[44px] rounded-xl border border-slate-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-500"
             />
           </div>
 
@@ -165,53 +178,59 @@ export default function DoubtBoxTab({
           <button
             type="submit"
             disabled={isSubmitting || !question.trim()}
-            className="w-full py-3 px-4 rounded-2xl bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 text-white font-semibold text-sm shadow-md shadow-rose-200 disabled:opacity-50 transition-all flex items-center justify-center gap-2"
+            className="w-full py-3.5 px-4 min-h-[48px] rounded-2xl bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 text-white font-semibold text-sm shadow-md shadow-rose-200 disabled:opacity-50 transition-all flex items-center justify-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-500"
           >
             <Plus className="w-4 h-4" />
             <span>Mama Se Poochho 💡</span>
           </button>
         </form>
-      </div>
+      </section>
 
       {/* Doubts List */}
-      <div className="space-y-4">
+      <section className="space-y-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <h3 className="text-md font-bold text-slate-800 flex items-center gap-2">
+          <h3 className="text-base font-bold text-slate-800 flex items-center gap-2">
             <span>💡 Sawaalo Ki List</span>
             {pendingCount > 0 && (
-              <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-rose-100 text-rose-700">
+              <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-rose-100 text-rose-800">
                 {pendingCount} Pending
               </span>
             )}
           </h3>
 
           {/* Filter Pills */}
-          <div className="flex bg-slate-100 p-1 rounded-xl text-xs font-medium">
+          <div className="flex bg-slate-100 p-1 rounded-xl text-xs font-medium" role="tablist" aria-label="Doubt status filters">
             <button
+              role="tab"
+              aria-selected={filter === "PENDING"}
               onClick={() => setFilter("PENDING")}
-              className={`px-3 py-1 rounded-lg transition-all ${
+              className={`px-3 py-1.5 min-h-[36px] rounded-lg transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-500 ${
                 filter === "PENDING"
-                  ? "bg-white text-rose-700 font-semibold shadow-sm"
+                  ? "bg-white text-rose-800 font-semibold shadow-sm"
                   : "text-slate-600 hover:text-slate-900"
               }`}
             >
               Mama Se Poochna Hai ({pendingCount})
             </button>
             <button
+              role="tab"
+              aria-selected={filter === "SOLVED"}
               onClick={() => setFilter("SOLVED")}
-              className={`px-3 py-1 rounded-lg transition-all ${
+              className={`px-3 py-1.5 min-h-[36px] rounded-lg transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 ${
                 filter === "SOLVED"
-                  ? "bg-white text-emerald-700 font-semibold shadow-sm"
+                  ? "bg-white text-emerald-800 font-semibold shadow-sm"
                   : "text-slate-600 hover:text-slate-900"
               }`}
             >
               Samajh Aa Gaya ({doubts.filter((d) => d.status === "SOLVED").length})
             </button>
             <button
+              role="tab"
+              aria-selected={filter === "ALL"}
               onClick={() => setFilter("ALL")}
-              className={`px-3 py-1 rounded-lg transition-all ${
+              className={`px-3 py-1.5 min-h-[36px] rounded-lg transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 ${
                 filter === "ALL"
-                  ? "bg-white text-slate-800 font-semibold shadow-sm"
+                  ? "bg-white text-slate-900 font-semibold shadow-sm"
                   : "text-slate-600 hover:text-slate-900"
               }`}
             >
@@ -222,7 +241,7 @@ export default function DoubtBoxTab({
 
         {filteredDoubts.length === 0 ? (
           <div className="text-center py-12 bg-white rounded-3xl border border-dashed border-slate-200">
-            <p className="text-4xl mb-2">🎉</p>
+            <p className="text-4xl mb-2" aria-hidden="true">🎉</p>
             <h4 className="text-sm font-semibold text-slate-700">Koi doubt pending nahi hai!</h4>
             <p className="text-xs text-slate-400 mt-1">
               Jab bhi padhte waqt koi cheez samajh na aaye, yahan note kar lena.
@@ -235,7 +254,7 @@ export default function DoubtBoxTab({
               const isSolved = doubt.status === "SOLVED";
 
               return (
-                <div
+                <article
                   key={doubt.id}
                   className={`bg-white rounded-2xl p-5 border transition-all ${
                     isSolved
@@ -269,13 +288,14 @@ export default function DoubtBoxTab({
                       )}
 
                       <button
+                        type="button"
                         onClick={() => {
                           if (confirm("Kya aap yeh doubt delete karna chahte hain?")) {
                             onDeleteDoubt(doubt.id);
                           }
                         }}
-                        className="text-slate-400 hover:text-rose-500 p-1"
-                        title="Delete doubt"
+                        aria-label={`Delete doubt regarding ${doubt.subject}: ${doubt.question.slice(0, 20)}`}
+                        className="text-slate-400 hover:text-rose-600 p-2 min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-500"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
@@ -284,7 +304,7 @@ export default function DoubtBoxTab({
 
                   {/* Question */}
                   <div className="my-2">
-                    <p className="text-sm sm:text-base font-semibold text-slate-800 whitespace-pre-wrap">
+                    <p className="text-base font-semibold text-slate-800 whitespace-pre-wrap">
                       {doubt.question}
                     </p>
                     {doubt.bookReference && (
@@ -297,15 +317,16 @@ export default function DoubtBoxTab({
 
                   {/* Uncle Solution / Notes */}
                   {doubt.resolutionNotes && (
-                    <div className="mt-3 p-3 rounded-xl bg-emerald-50/80 border border-emerald-200 text-xs text-emerald-950">
-                      <div className="font-semibold text-emerald-800 flex items-center gap-1 mb-1">
-                        <span>👨‍🏫 Mama&apos;s Solution / Explanation:</span>
+                    <div className="mt-3 p-3.5 rounded-xl bg-emerald-50/90 border border-emerald-200 text-xs text-emerald-950">
+                      <div className="font-semibold text-emerald-900 flex items-center gap-1 mb-1">
+                        <span aria-hidden="true">👨‍🏫</span>
+                        <span>Mama&apos;s Solution / Explanation:</span>
                       </div>
-                      <p className="whitespace-pre-wrap">{doubt.resolutionNotes}</p>
+                      <p className="whitespace-pre-wrap leading-relaxed">{doubt.resolutionNotes}</p>
                     </div>
                   )}
 
-                  {/* Uncle Action Toolbar */}
+                  {/* Actions */}
                   {!isSolved && (
                     <div className="mt-3 pt-3 border-t border-slate-100 flex flex-wrap items-center justify-between gap-2">
                       <span className="text-xs text-slate-400">
@@ -314,19 +335,21 @@ export default function DoubtBoxTab({
 
                       {role === "mama" ? (
                         <button
+                          type="button"
                           onClick={() => {
                             setActiveDoubtId(doubt.id);
                             setSolutionText(doubt.resolutionNotes || "");
                           }}
-                          className="text-xs px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold flex items-center gap-1.5 shadow-sm"
+                          className="text-xs px-3.5 py-2 min-h-[40px] rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold flex items-center gap-1.5 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
                         >
                           <MessageSquare className="w-3.5 h-3.5" />
                           Answer & Mark Solved
                         </button>
                       ) : (
                         <button
+                          type="button"
                           onClick={() => handleSolve(doubt.id)}
-                          className="text-xs px-3 py-1.5 rounded-xl bg-emerald-50 text-emerald-700 hover:bg-emerald-100 font-semibold flex items-center gap-1 border border-emerald-200"
+                          className="text-xs px-3.5 py-2 min-h-[40px] rounded-xl bg-emerald-50 text-emerald-800 hover:bg-emerald-100 font-semibold flex items-center gap-1 border border-emerald-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500"
                         >
                           <Check className="w-3.5 h-3.5" />
                           Samajh aa gaya! (Mark Solved)
@@ -337,29 +360,30 @@ export default function DoubtBoxTab({
 
                   {/* Mama Inline Answer Box */}
                   {activeDoubtId === doubt.id && (
-                    <div className="mt-3 p-4 bg-indigo-50/70 rounded-2xl border border-indigo-200 space-y-3">
-                      <label className="block text-xs font-semibold text-indigo-950">
+                    <div className="mt-3 p-4 bg-indigo-50/80 rounded-2xl border border-indigo-200 space-y-3">
+                      <label htmlFor={`solution-${doubt.id}`} className="block text-xs font-semibold text-indigo-950">
                         👨‍🏫 Solution ya Samajhane ke Notes likhein:
                       </label>
                       <textarea
+                        id={`solution-${doubt.id}`}
                         rows={3}
                         placeholder="Formula, steps ya explanation likhein..."
                         value={solutionText}
                         onChange={(e) => setSolutionText(e.target.value)}
-                        className="w-full text-xs px-3 py-2 rounded-xl border border-indigo-200 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                        className="w-full text-base sm:text-xs px-3 py-2 rounded-xl border border-indigo-200 bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
                       />
                       <div className="flex justify-end gap-2">
                         <button
                           type="button"
                           onClick={() => setActiveDoubtId(null)}
-                          className="text-xs px-3 py-1.5 text-slate-500 hover:underline"
+                          className="text-xs px-3 py-2 min-h-[36px] text-slate-600 hover:underline"
                         >
                           Cancel
                         </button>
                         <button
                           type="button"
                           onClick={() => handleSolve(doubt.id)}
-                          className="text-xs px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold shadow-sm flex items-center gap-1"
+                          className="text-xs px-4 py-2 min-h-[36px] rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold shadow-sm flex items-center gap-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500"
                         >
                           <CheckCircle className="w-3.5 h-3.5" />
                           Save Solution & Mark Solved 🎉
@@ -367,13 +391,12 @@ export default function DoubtBoxTab({
                       </div>
                     </div>
                   )}
-                </div>
+                </article>
               );
             })}
           </div>
         )}
-      </div>
+      </section>
     </div>
   );
 }
-
