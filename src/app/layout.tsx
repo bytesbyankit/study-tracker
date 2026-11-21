@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
@@ -14,7 +14,19 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Meri Padhai Tracker 🌟 | Daily Study & Doubts",
-  description: "Track daily study topics, future planning, and doubts with ease!",
+  description: "Bhanji aur Mama ka simple, easy study and doubt tracker!",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "Padhai Tracker",
+  },
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+  maximumScale: 5,
 };
 
 export default function RootLayout({
@@ -24,7 +36,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
-      <body className="min-h-full bg-gradient-to-br from-indigo-50/60 via-purple-50/40 to-pink-50/50 text-slate-800 font-sans selection:bg-purple-200 selection:text-purple-900">
+      <body className="min-h-full bg-gradient-to-br from-indigo-50/60 via-purple-50/40 to-pink-50/50 text-slate-800 font-sans selection:bg-purple-200 selection:text-purple-900 pb-20 md:pb-6">
         {children}
       </body>
     </html>

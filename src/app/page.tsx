@@ -8,6 +8,7 @@ import PlannerTab from "@/components/PlannerTab";
 import DoubtBoxTab from "@/components/DoubtBoxTab";
 import TrophyTab from "@/components/TrophyTab";
 import AddSubjectModal from "@/components/AddSubjectModal";
+import MobileBottomNav from "@/components/MobileBottomNav";
 import { StudyLog, PlanItem, Doubt, SubjectItem, StatsData } from "@/lib/types";
 import { BookOpen, Calendar, HelpCircle, Award, Loader2 } from "lucide-react";
 
@@ -199,11 +200,11 @@ export default function Home() {
       />
 
       {/* Main Container */}
-      <main className="flex-1 max-w-6xl w-full mx-auto px-4 py-5 sm:px-6">
+      <main className="flex-1 max-w-6xl w-full mx-auto px-3.5 py-3 sm:px-6 sm:py-5">
         {/* Welcome Section */}
-        <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
+        <div className="mb-2 sm:mb-4 flex flex-wrap items-center justify-between gap-2">
           <div>
-            <h2 className="text-xl sm:text-2xl font-bold text-slate-800 flex items-center gap-2">
+            <h2 className="text-lg sm:text-2xl font-bold text-slate-800 flex items-center gap-1.5">
               <span>{greeting}</span>
               <span className="text-purple-600">
                 {role === "bhanji" ? "Padhai Champ! 🎒" : "Mama Ji! 👨‍🏫"}
@@ -211,8 +212,8 @@ export default function Home() {
             </h2>
             <p className="text-xs sm:text-sm text-slate-500">
               {role === "bhanji"
-                ? "Aaj kya naya seekhna hai? Khud record karo aur star kamao!"
-                : "Bhanji ke daily study updates dekhein, doubts solve karein aur feedback dein."}
+                ? "Aaj kya naya seekhna hai? Record karo aur stars kamao!"
+                : "Bhanji ke daily updates dekhein aur doubts solve karein."}
             </p>
           </div>
 
@@ -221,8 +222,8 @@ export default function Home() {
               role="alert"
               className="bg-rose-100 text-rose-900 text-xs font-semibold px-3 py-1.5 rounded-full flex items-center gap-1.5 animate-pulse"
             >
-              <HelpCircle className="w-4 h-4 text-rose-600" aria-hidden="true" />
-              <span>{stats.pendingDoubts} Doubts waiting for your answer!</span>
+              <HelpCircle className="w-3.5 h-3.5 text-rose-600" aria-hidden="true" />
+              <span>{stats.pendingDoubts} Doubts waiting for answer!</span>
             </aside>
           )}
         </div>
@@ -230,8 +231,8 @@ export default function Home() {
         {/* Quick Stats Bar */}
         <StatsBar stats={stats} />
 
-        {/* Accessible Tab Navigation */}
-        <nav aria-label="Study tracker sections" className="mb-6">
+        {/* Desktop / Tablet Tab Navigation (Hidden on Mobile, handled by Bottom Nav) */}
+        <nav aria-label="Desktop navigation" className="hidden md:block mb-6">
           <div
             role="tablist"
             aria-label="Tracker Tabs"
@@ -325,7 +326,7 @@ export default function Home() {
             <p className="text-xs">Loading tracker...</p>
           </div>
         ) : (
-          <div>
+          <div className="pb-16 md:pb-6">
             <div
               id="panel-daily"
               role="tabpanel"
@@ -401,6 +402,15 @@ export default function Home() {
         )}
       </main>
 
+      {/* App-like Fixed Mobile Bottom Navigation */}
+      <MobileBottomNav
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        pendingDoubts={stats.pendingDoubts}
+        upcomingPlans={stats.upcomingPlans}
+        totalStars={stats.totalStars}
+      />
+
       {/* Native Add Subject Modal Dialog */}
       <AddSubjectModal
         isOpen={isSubjectModalOpen}
@@ -408,8 +418,8 @@ export default function Home() {
         onAddSubject={handleAddSubject}
       />
 
-      {/* Footer */}
-      <footer className="py-4 border-t border-purple-100 bg-white/60 text-center text-xs text-slate-500">
+      {/* Footer (Desktop only, on mobile bottom nav is present) */}
+      <footer className="hidden md:block py-4 border-t border-purple-100 bg-white/60 text-center text-xs text-slate-500">
         Meri Padhai Tracker • Padhai karo, aage badho! 🌟
       </footer>
     </div>
