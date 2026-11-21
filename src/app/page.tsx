@@ -9,6 +9,7 @@ import DoubtBoxTab from "@/components/DoubtBoxTab";
 import TrophyTab from "@/components/TrophyTab";
 import AddSubjectModal from "@/components/AddSubjectModal";
 import MobileBottomNav from "@/components/MobileBottomNav";
+import PWAInstaller from "@/components/PWAInstaller";
 import { StudyLog, PlanItem, Doubt, SubjectItem, StatsData } from "@/lib/types";
 import { BookOpen, Calendar, HelpCircle, Award, Loader2 } from "lucide-react";
 
@@ -201,6 +202,9 @@ export default function Home() {
 
       {/* Main Container */}
       <main className="flex-1 max-w-6xl w-full mx-auto px-3.5 py-3 sm:px-6 sm:py-5">
+        {/* PWA Install Banner */}
+        <PWAInstaller />
+
         {/* Welcome Section */}
         <div className="mb-2 sm:mb-4 flex flex-wrap items-center justify-between gap-2">
           <div>

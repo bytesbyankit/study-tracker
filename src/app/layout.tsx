@@ -15,10 +15,15 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Meri Padhai Tracker 🌟 | Daily Study & Doubts",
   description: "Bhanji aur Mama ka simple, easy study and doubt tracker!",
+  manifest: "/manifest.webmanifest",
+  icons: {
+    icon: "/icons/icon-192.png",
+    apple: "/icons/icon-192.png",
+  },
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
-    title: "Padhai Tracker",
+    title: "Meri Padhai",
   },
 };
 
